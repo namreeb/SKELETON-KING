@@ -4,12 +4,9 @@ public class MatchHistoryOverviewHandler : IClientRequesterHandler
 {
     public async Task<IActionResult> HandleRequest(ControllerContext controllerContext, Dictionary<string, string> formData)
     {
-        string? nickname = formData["nickname"];
-        string? table = formData["table"];
-        if (nickname == null || table == null)
-        {
-            return new BadRequestResult();
-        }
+        string nickname = formData["nickname"];
+        string table = formData["table"];
+
         using BountyContext bountyContext = controllerContext.HttpContext.RequestServices.GetRequiredService<BountyContext>();
         string? serializedMatchIds = table switch
         {
