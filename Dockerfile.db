@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/mssql/server
+
+ENV MSSQL_SA_PASSWORD=Supersecur3!
+ENV ACCEPT_EULA=Y
+
+COPY BOUNTY.zip /tmp
+
+RUN \
+    cd /tmp && \
+    python3 -c "import zipfile; zipfile.ZipFile('./BOUNTY.zip', 'r').extractall('.')" && \
+    (/opt/mssql/bin/sqlservr --accept-eula &) | grep -q "Service Broker manager has started" && \
+    /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P ${MSSQL_SA_PASSWORD} -Q "RESTORE DATABASE BOUNTY FROM DISK = '/tmp/BOUNTY.bak' WITH REPLACE, MOVE 'MERRICK' TO '/var/opt/mssql/data/BOUNTY.mdf', MOVE 'MERRICK_log' TO '/var/opt/mssql/data/BOUNTY_log.ldf'" && \
+    pkill sqlservr

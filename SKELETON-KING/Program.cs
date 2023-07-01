@@ -14,7 +14,7 @@ public class Program
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         builder.Services.AddControllers();
 
-        string connectionString = builder.Configuration.GetConnectionString("BOUNTY")!;
+        string connectionString = args.Length > 1 ? args[1] : builder.Configuration.GetConnectionString("BOUNTY")!;
         builder.Services.AddDbContextFactory<BountyContext>(options =>
         {
             options.UseSqlServer(connectionString, connection => connection.MigrationsAssembly("SKELETON-KING"));
